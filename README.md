@@ -7,5 +7,5 @@ Scope of this project is to implement the blockchain as logic and nothing more t
 2. Consensus - Longest chain rule
 3. Proof-of-work - Computation logic which validates the transaction
 
-## Requirement
+### Requirement
 Node.js - v6.9.5
