@@ -1,3 +1,5 @@
+// Object Block is an intermittent object which must be extended as per the use case and
+// not implemented directly.
 var BaseObject = require('./base');
 
 function BlockException(message) {
@@ -7,21 +9,50 @@ function BlockException(message) {
 
 function Block() {
     BaseObject.call(this);
-    
+
+    this.transactions = Array();
     this.previous = undefined;
+    this.hash = undefined;
 }
 
 Block.prototype = Object.create(BaseObject.prototype);
 Block.prototype.constructor = Block;
 
-Block.prototype.addToChain = function(block) {
+// Chain the current block with last block
+Block.prototype.chain = function(block) {
     if (block instanceof Block) {
+        this.generateHash();
         this.previous = block;
     } else {
-        // Not able to exact type: typeof can be used but is not informative enough
+        // Not able to get exact type: typeof can be used but is not informative enough
         // in case of objects.
-        throw new BlockException('Expected of type Block, found something else!'); 
+        throw new BlockException('Expected type Block as a parameter, found something else!'); 
     }
+}
+
+// Add transaction to current block
+Block.prototype.addTransaction = function(transaction) {
+    if (transaction instanceof Transaction) {
+        this.transactions.push(transaction);
+    } else {
+        throw new BlockException('Expected type Transaction as a parameter, found something else!');
+    }
+}
+
+// Generates a hash for the block to be called at the time of block to be added to chain
+// Can also be pre-defined
+Block.prototype.generateHash = function() {
+    // Some SHA implementation which is unique for each of the block
+    this.hash = '__hash__';
+}
+
+
+// Disable all the alter.
+// TODO: Instead immutable block gets added to chain.
+Block.prototype.disableAlter = function() {
+    this.addTransaction = undefined;
+    this.generateHash = undefined;
+    this.chain = undefined;
 }
 
 module.exports = Block;
