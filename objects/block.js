@@ -40,19 +40,15 @@ Block.prototype.addTransaction = function(transaction) {
 }
 
 // Generates a hash for the block to be called at the time of block to be added to chain
-// Can also be pre-defined
 Block.prototype.generateHash = function() {
     // Some SHA implementation which is unique for each of the block
     this.hash = '__hash__';
 }
 
 
-// Disable all the alter.
-// TODO: Instead immutable block gets added to chain.
-Block.prototype.disableAlter = function() {
-    this.addTransaction = undefined;
-    this.generateHash = undefined;
-    this.chain = undefined;
+Block.prototype.makeImmutable = function() {
+    this.generateHash();
+    return Object.freeze(this);
 }
 
 module.exports = Block;
