@@ -1,6 +1,8 @@
 // Object Block is an intermittent object which must be extended as per the use case and
 // not implemented directly.
 var BaseObject = require('./base');
+var TR = require('./transaction');
+var Transaction = TR.Transaction;
 
 function BlockException(message) {
     this.name = 'BlockException';
@@ -21,8 +23,8 @@ Block.prototype.constructor = Block;
 // Chain the current block with last block
 Block.prototype.chain = function(block) {
     if (block instanceof Block) {
-        this.generateHash();
         this.previous = block;
+        return this.makeImmutable();
     } else {
         // Not able to get exact type: typeof can be used but is not informative enough
         // in case of objects.

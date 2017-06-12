@@ -1,5 +1,5 @@
 var BaseObject = require('./base');
-var ImmutableBlock = require('./immutableBlock');
+var Block = require('./block');
 
 function BlockChainException(message) {
     this.name = 'BlockChainException';
@@ -10,10 +10,11 @@ function BlockChainException(message) {
 function BlockChain(head) {
     BaseObject.call(this);
 
-    return function(head) {
-       this.head = head;
-       return Object.freeze(this);
-    }(head);
+    // 1st block in the chain could be the only empty block.
+    // TODO:
+    // Find a better solution
+    // Make sure the type of head is always an non-empty immutable block
+    this.head = new Block();
 }
 
 BlockChain.prototype = Object.create(BaseObject);
@@ -26,9 +27,7 @@ BlockChain.prototype.addToChain = function(block) {
         // immutable block in the chain.
         // If this.head is some block than block gets updated with this.head and becomes immutable
         // which then gets added to chain.
-        block.chain(this.head);
-        var immutableBlock = ImmutableBlock(block);
-        return new BlockChain(immutableBlock);
+        this.head = block.chain(this.head);
     } else {
         // Not able to get exact type: typeof can be used but is not informative enough
         // in case of objects.
@@ -36,8 +35,7 @@ BlockChain.prototype.addToChain = function(block) {
     }
 }
 
+// Do not allow to add more or delete available properties.
 BlockChain = Object.seal(BlockChain);
-BlockChain = Object.preventExtensions(BlockChain);
-
 
 module.exports = BlockChain;
