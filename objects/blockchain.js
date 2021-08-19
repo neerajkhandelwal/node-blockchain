@@ -15,6 +15,7 @@ function BlockChain(head) {
     // Find a better solution
     // Make sure the type of head is always an non-empty immutable block
     this.head = new Block();
+    this.len = 0;
 }
 
 BlockChain.prototype = Object.create(BaseObject);
@@ -27,11 +28,13 @@ BlockChain.prototype.addToChain = function(block) {
         // immutable block in the chain.
         // If this.head is some block than block gets updated with this.head and becomes immutable
         // which then gets added to chain.
-        this.head = block.chain(this.head);
+        this.len++;
+        this.head = block.chain(this.head, this.len);
+
     } else {
         // Not able to get exact type: typeof can be used but is not informative enough
         // in case of objects.
-        throw new BlockChainException('Expected type Block as a parameter, found something else!'); 
+        throw new BlockChainException('Expected type Block as a parameter, found something else!');
     }
 }
 
